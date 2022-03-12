@@ -5,26 +5,34 @@ import matplotlib.pyplot as plt
 
 # Загрузка изображения
 image = cv2.imread('roses.jpeg', cv2.IMREAD_GRAYSCALE)
-res_image = cv2.resize(image, (int(image.shape[0] / 2), int(image.shape[1] / 2)))
+res_image = image.copy()
 image_pixels = res_image.shape[0] * res_image.shape[1]
 
 # Создание графика
 figure = plt.figure(figsize=(6, 4))
 ax = figure.add_subplot()
-biba = ax.hist(res_image.ravel(), 256)
-biba_zalupa = [i for i in biba[0]]
-biba_len = len(biba[0])
+hist_cumulative = hist = ax.hist(res_image.ravel(), 256)
+hist_data = [i for i in hist[0]]
+hist_data_len = len(hist_data)
+
 
 # Нормализация гистограммы
-for i in range(biba_len):
+for i in range(hist_data_len):
 
-    biba_zalupa[i] = int(biba[0][i]) / image_pixels
+    hist[0][i] = int(hist_data[i]) / image_pixels
+
+
+# Вычисление кумулятивной гистограммы
+for i in range(1, hist_data_len):
+
+    hist_cumulative[0][i] = hist[0][i - 1] + hist[0][i]
+
 
 # Обработка изображения
 for i in range(res_image.shape[0]):
     for j in range(res_image.shape[1]):
 
-        res_image[i][j] = 20 * 255 * biba_zalupa[res_image[i][j]]
+        res_image[i][j] = 255 * hist_cumulative[0][res_image[i][j]]
 
 # cv2.imshow('image', image)
 # cv2.waitKey(0)
@@ -33,6 +41,7 @@ ax.grid()
 plt.show()
 cv2.imshow('tiger', res_image)
 cv2.waitKey(0)
+cv2.imwrite('roses-result.jpeg', res_image)
 
 
 figure_1 = plt.figure(figsize=(6, 4))
