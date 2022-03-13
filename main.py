@@ -4,13 +4,15 @@ import matplotlib.pyplot as plt
 
 
 # Загрузка изображения
-image = cv2.imread('roses.jpeg', cv2.IMREAD_GRAYSCALE)
+image = cv2.imread('tiger.jpg', cv2.IMREAD_GRAYSCALE)
 res_image = image.copy()
 image_pixels = res_image.shape[0] * res_image.shape[1]
 
 # Создание графика
 figure = plt.figure(figsize=(6, 4))
+figure_1 = plt.figure(figsize=(6, 4))
 ax = figure.add_subplot()
+ax_1 = figure_1.add_subplot()
 hist_cumulative = hist = ax.hist(res_image.ravel(), 256)
 hist_data = [i for i in hist[0]]
 hist_data_len = len(hist_data)
@@ -34,15 +36,11 @@ for i in range(res_image.shape[0]):
 
         res_image[i][j] = 255 * hist_cumulative[0][res_image[i][j]]
 
-# cv2.imshow('image', image)
-# cv2.waitKey(0)
-# print(len(biba[0]))
+
+hist_result = ax_1.hist(res_image.ravel(), 256)
 ax.grid()
+ax_1.grid()
 plt.show()
 cv2.imshow('tiger', res_image)
 cv2.waitKey(0)
-cv2.imwrite('roses-result.jpeg', res_image)
-
-
-figure_1 = plt.figure(figsize=(6, 4))
-ax_1 = figure_1.add_subplot()
+# cv2.imwrite('roses-result.jpeg', res_image)
